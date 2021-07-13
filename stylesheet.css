@@ -1,0 +1,27 @@
+.to-do-main-window
+{
+  height: 540px;
+  width: 480px;
+  background-color:#424f50;
+  border-color: #ffffff;
+}
+
+.to-do-title
+{
+  width: 480px;
+}
+
+.text-title
+{
+  text-align: left;
+  font-size:40px;
+}
+
+
+.to-do-button-main
+{
+  width: 460px;
+  font-size:20px;
+  border-color: #282d2e;
+  border-radius:10px;
+}

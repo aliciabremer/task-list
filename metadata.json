@@ -1,0 +1,6 @@
+{
+    "uuid": "to-do@alicia",
+    "name": "To Do List",
+    "description": "Maintains daily to-do list with completed task",
+    "prevent-decorations": false
+}
