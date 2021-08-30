@@ -1,84 +1,91 @@
 const Desklet = imports.ui.desklet;
 const St = imports.gi.St;
+const Cinnamon = imports.gi.Cinnamon;
 const Lang = imports.lang;
+const GLib = imports.gi.GLib;
+const Gettext = imports.gettext;
+const UUID = "task-list@alicia";
+const DESKLET_ROOT = imports.ui.deskletManager.deskletMeta[UUID].path;
 
-function HelloDesklet(metadata, desklet_id)
-{
-    this._init(metadata, desklet_id);
+Gettext.bindtextdomain(UUID, GLib.get_home_dir() + "/.local/share/locale")
+
+function _(str) {
+  return Gettext.dgettext(uuid, str);
 }
 
-HelloDesklet.prototype = {
+function MyDesklet(metadata, desklet_id) {
+	this._init(metadata, desklet_id);
+}
+
+MyDesklet.prototype = {
     __proto__: Desklet.Desklet.prototype,
 
     _init: function(metadata, desklet_id)
     {
         Desklet.Desklet.prototype._init.call(this, metadata, desklet_id);
-
         this.setupUI();
-
-        //create list of boxes of text stuff...
-        //start with list and then create multi-dimensionalarray/list thing
     },
 
     setupUI: function()
     {
-        // main container for the desklet
-
-
         this.mainWindow = new St.BoxLayout({vertical:true, style_class: "to-do-main-window"});
 
-        this.bottomContent = new St.BoxLayout({vertical:true}); //change to scrollable
+        this.title = new St.Label({style_class: "text-title"});
+        this.title.set_text("To-Do List");
 
-        let text = new St.Label({style_class: "text-title"});
-        text.set_text("TO-DO:");
+        this.mainWindow.add_child(this.title);
 
-        this.mainWindow.add_child(text);
+        this.mainDir = GLib.get_home_dir()+'/.local/share/cinnamon/desklets/task-list@alicia/';
+        this.file = this.mainDir + "todo.json";
 
-        this.mainWindow.add_child(this.bottomContent);
+        global.log("task-list string" + Cinnamon.get_file_contents_utf8_sync(this.file).toString());
 
-        let buttonAdd = new St.Button({style_class: "to-do-button-main"});
-        buttonAdd.set_label("+");
-        buttonAdd.connect("clicked", Lang.bind(this, this.addItem));
-        this.mainWindow.add_child(buttonAdd);
+        let choices = JSON.parse(Cinnamon.get_file_contents_utf8_sync(this.file).toString());
 
-        let buttonClear = new St.Button({style_class: "to-do-button-main"});
-        buttonClear.set_label("clear all");
-        buttonClear.connect("clicked", Lang.bind(this, this.clearItems));
-        this.mainWindow.add_child(buttonClear);
+        global.log("task-list json file:" + choices);
+
+        for (let task in choices.tasks)
+        {
+          let container = new St.BoxLayout({vertical:false, style_class: "text-boxes"});
+
+          let tempText = new St.Label();
+          tempText.set_text(task);
+
+           let buttonAdd = new St.Button({style_class: "button-text"});
+           buttonAdd.set_label("(click)");
+           buttonAdd.connect("clicked", Lang.bind(buttonAdd, this.itemComplete));
+           container.add_child(buttonAdd);
+           container.add_child(tempText);
+
+          this.mainWindow.add_child(container);
+        }
 
         this.setContent(this.mainWindow);
-    },
-
-    addItem: function()
-    {
-      let item = new St.BoxLayout({vertical:false});
-      let selected = new St.Button();
-      selected.set_label("(click)");
-      selected.connect("clicked", Lang.bind(this, this.itemComplete));
-
-      let text = new St.Label();
-      let temp = text.get_clutter_text();
-      temp.set_editable(true);
-      temp.set_cursor_visible(true);
-       //change to entry so can be edited
-
-
-      item.add_child(selected);
-      item.add_child(text);
-      this.bottomContent.add_child(item);
-    },
-
-    clearItems: function()
-    {
+        //add reload
 
     },
 
     itemComplete: function()
     {
+      this.set_checked(!this.get_checked());
+      if (this.get_checked())
+      {
+        this.set_label("\u00D7");
+      }
+      else
+      {
+        this.set_label("\u2022");
+      }
+    },
+
+    on_desklet_clicked: function(event)
+    {
+      this.setUpUI();
     }
+
 }
 
 function main(metadata, desklet_id)
 {
-    return new HelloDesklet(metadata, desklet_id);
+    return new MyDesklet(metadata, desklet_id);
 }
