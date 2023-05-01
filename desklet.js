@@ -28,7 +28,7 @@ MyDesklet.prototype = {
 
     setupUI: function()
     {
-        this.mainWindow = new St.BoxLayout({vertical:true, style_class: "to-do-main-window"});
+        this.mainWindow = new St.BoxLayout({vertical:true});
 
         this.title = new St.Label({style_class: "text-title"});
         this.title.set_text("To-Do List");
