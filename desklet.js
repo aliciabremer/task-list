@@ -44,15 +44,20 @@ MyDesklet.prototype = {
 
         global.log("task-list json file:" + choices);
 
-        for (let task in choices.tasks)
+        for (var i = 0; i < choices.tasks.length; i++)
         {
-          let container = new St.BoxLayout({vertical:false, style_class: "text-boxes"});
+	  let task = choices.tasks[i]
+	  let container = new St.BoxLayout({vertical:false, style_class: "text-boxes"});
 
           let tempText = new St.Label();
           tempText.set_text(task);
 
            let buttonAdd = new St.Button({style_class: "button-text"});
            buttonAdd.set_label("(click)");
+
+
+	   buttonAdd.set_name((i+1).toString());
+	   buttonAdd.set_label(buttonAdd.get_name()); 
            buttonAdd.connect("clicked", Lang.bind(buttonAdd, this.itemComplete));
            container.add_child(buttonAdd);
            container.add_child(tempText);
@@ -60,7 +65,15 @@ MyDesklet.prototype = {
           this.mainWindow.add_child(container);
         }
 
+
+	this.buttonRefresh = new St.Button({style_class: "refresh"});
+	this.buttonRefresh.set_label("Refresh");
+	this.buttonRefresh.connect("clicked", Lang.bind(this, this.setupUI));
+	this.mainWindow.add_child(this.buttonRefresh);
+	
         this.setContent(this.mainWindow);
+
+	// add button for refresh
         //add reload
 
     },
@@ -74,7 +87,7 @@ MyDesklet.prototype = {
       }
       else
       {
-        this.set_label("\u2022");
+        this.set_label(this.get_name()); // ("\u2022");
       }
     },
 

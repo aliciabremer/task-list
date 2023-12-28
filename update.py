@@ -6,7 +6,7 @@ with open('todo.json', 'r') as openfile:
     json_object = json.load(openfile)
 
 c = ""
-print("update to do list:\n- add 'text here'\n- ret 'text here'\n- ren 'number here'\n- pri\n- cle\n- fin")
+print("update to do list:\n- add 'text here'\n- ret 'text here'\n- ren 'number here'\n- pri\n- cle\n- fin\n- swp")
 
 while c != "fin":
   c = input("input now\n")
@@ -21,6 +21,13 @@ while c != "fin":
       print(str(i) + ": " + json_object["tasks"][i]);
   if c[0:3]=="cle":
     json_object["tasks"].clear();
+  if c[0:3]=="swp":
+    spc = c[4:].index(" ")
+    ind1 = int(c[4:spc+4])
+    ind2 = int(c[spc+5:])
+    obj = json_object["tasks"][ind1]
+    json_object["tasks"][ind1] = json_object["tasks"][ind2]
+    json_object["tasks"][ind2] = obj
 
 
 # Writing to sample.json

@@ -17,3 +17,12 @@
   margin-right:10px;
   cursor:pointer;
 }
+
+.refresh
+{
+  margin-right: 10px;
+  text-align: left;
+  background-color: #234F1E;
+  padding: 5px;
+  margin: 5px;
+}
